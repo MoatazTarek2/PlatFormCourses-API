@@ -1,0 +1,13 @@
+const express=require('express')
+const route=express.Router()
+const services_courses=require('../services/courses.services')
+const alowedto=require('../middleware/alowedTo')
+const verifyToken=require('../middleware/vreifyToken')
+route.get('/',verifyToken,services_courses.get_all_courses)
+route.post('/add',verifyToken,alowedto('instructor'),services_courses.add_course)
+route.get('/get/:id_course',verifyToken,services_courses.get_course)
+route.delete('/delete/:id_course',verifyToken,alowedto('admin'),services_courses.delete_course)
+route.patch('/update/:id_course',verifyToken,alowedto('admin'),services_courses.update_course)
+route.get('/:id_course/lessons',verifyToken,services_courses.lessons_course)
+route.get('/:id_course/:id_lesson',verifyToken,services_courses.lesson_course)
+module.exports=route 

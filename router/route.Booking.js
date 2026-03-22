@@ -1,0 +1,10 @@
+const express=require('express')
+const services_Booking=require('../services/Booking.services')
+const route=express.Router()
+const alowedto=require('../middleware/alowedTo')
+const verifyToken=require('../middleware/vreifyToken')
+route.get('/',verifyToken,alowedto('admin'),services_Booking.get_all_Booking)
+route.get('/get/:id_Booking',verifyToken,alowedto('admin'),services_Booking.get_Booking)
+route.post('/add',verifyToken,services_Booking.add_Booking)
+route.delete('/delete/:id_Booking',verifyToken,services_Booking.delete_Booking)
+module.exports=route
