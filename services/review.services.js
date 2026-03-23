@@ -11,14 +11,11 @@ const add_review=asyncWrapper(async(req,res,next)=>{
         }
     const review=new Review_model({course_id,comment,rating_,userr_id:req.paylod.id})
     if(rating_){
-        let avg=0,total=0
         course.rating.push(rating_)
-        for(let i=0;i<course.rating.length;i++){
-            total+=course.rating[i]
-        }
-        avg=(total/course.rating.length)
-        course.rating_count=avg
-        await course.save()
+        const n = course.rating.length;
+        course.rating_count = ((course.rating_count * (n - 1)) + rating_) / n;
+        await course.save();
+        
     }
     await review.save()
     res.json({status:httpstatus.SUCCESS,data:'done'})

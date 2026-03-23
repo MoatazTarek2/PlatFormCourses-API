@@ -10,7 +10,7 @@ const ReviewSchema=mongoose.Schema({
         ref:'COURSES',
         required:true
     },
-    comment:Array,
+    comment:[String],
     rating_:{
         type:Number,
         min:1,max:5,
