@@ -11,12 +11,13 @@ const route_courses=require('./router/route.courses')
 const route_lessons=require('./router/route.lesson')
 const route_Booking=require('./router/route.Booking')
 const route_review=require('./router/route.review')
+const PORT=process.env.PORT || 2300
 const url=process.env.MONGO_URL
 mongoose.connect(url).then(()=>{
     console.log('coneccted of database')
 })
-app.listen(2300,()=>{
-    console.log('listen in port 2300')
+app.listen(PORT,()=>{
+    console.log(`listen in port ${PORT}`)
 })
 app.use('/api/auth',route_user)
 app.use('/api/course',route_courses)

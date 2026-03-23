@@ -15,7 +15,6 @@ const add_review=asyncWrapper(async(req,res,next)=>{
         const n = course.rating.length;
         course.rating_count = ((course.rating_count * (n - 1)) + rating_) / n;
         await course.save();
-        
     }
     await review.save()
     res.json({status:httpstatus.SUCCESS,data:'done'})

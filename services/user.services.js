@@ -14,7 +14,7 @@ const register=asyncWrapper(async(req,res,next)=>{
     }
     const hashpassword=await bcrypt.hash(password,8)
     const user=new user_model({name,email,age,password:hashpassword,role})
-    const token=JWT.sign({email:user.email,id:user._id,role:user.role},process.env.Moataz101,{expiresIn:'1h'})
+    const token=JWT.sign({email:user.email,id:user._id,role:user.role},process.env.Moataz101,{expiresIn:'14d'})
     await user.save()
     res.json({status:httpstatuse.SUCCESS,data:'user done',token:token})
 
@@ -29,7 +29,7 @@ const login=asyncWrapper(async(req,res,next)=>{
     if(!comparepassword){
         return next(AppError.create('Invalid Pssword',401,httpstatuse.FAIL))
     }
-    const token=JWT.sign({email:user.email,id:user._id,role:user.role},process.env.Moataz101,{expiresIn:'1h'})
+    const token=JWT.sign({email:user.email,id:user._id,role:user.role},process.env.Moataz101,{expiresIn:'14d'})
     res.json({status:httpstatuse.SUCCESS,token:token})
 })
 const courses_user=asyncWrapper(async(req,res,next)=>{

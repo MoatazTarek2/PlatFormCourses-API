@@ -3,10 +3,22 @@ const appError=require('../utils/appError')
 const course_model=require('../models/courses.model')
 const lessons_model=require('../models/lessons.model')
 const Booking_model=require('../models/Booking.model')
-const user_model=require('../models/user.model')
 const httpstatus=require('../utils/httpstatuse')
 const get_all_courses=asyncWrapper(async(req,res)=>{
-    const courses=await course_model.find()
+    const page=req.query.page || 1
+    const limit=req.query.limit || 10
+    const skip=(page-1)*limit
+    const category=req.query.category
+    if(category){
+        const courses=await course_model.find({category:category},{"rating":false,"__v":false}).skip(skip).limit(limit)
+        return res.json({status:httpstatus.SUCCESS,data:{courses}})
+    }
+    const toprated=req.query.toprated
+    if(toprated){
+        const courses=await course_model.find({rating_count:{$gt:toprated}},{"rating":false,"__v":false}).skip(skip).limit(limit)
+        return res.json({status:httpstatus.SUCCESS,data:{courses}})
+    }
+    const courses=await course_model.find({},{'rating':false,'__v':false}).skip(skip).limit(limit)
     res.json({status:httpstatus.SUCCESS,data:{courses}})
 })
 const add_course=asyncWrapper(async(req,res,next)=>{
