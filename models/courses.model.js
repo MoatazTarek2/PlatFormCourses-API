@@ -30,7 +30,8 @@ const CoursesSchema=mongoose.Schema({
 CoursesSchema.pre('deleteOne', { document: true, query: true }, async function(next) {
     const Booking_model = require('./Booking.model')
     const lessons_model = require('./lessons.model')
-    
+    const review_model = require('./review.model')
+    await review_model.deleteMany({ course_id: this._id })
     await Booking_model.deleteMany({ course_id: this._id })
     await lessons_model.deleteMany({ course_id: this._id })
     next();

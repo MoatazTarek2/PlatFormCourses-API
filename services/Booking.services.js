@@ -39,6 +39,15 @@ const add_Booking=asyncWrapper(async(req,res,next)=>{
     await course.save()
     res.json({status:httpstatus.SUCCESS,data:'done'})
 })
+const update_Booking=asyncWrapper(async(req,res,next)=>{
+    const id_Booking=req.params.id_Booking
+    const Booking=await Booking_model.findOne({_id:id_Booking})
+    if(!Booking){
+        return next(appError.create('NOT FOUND',404,httpstatus.FAIL))
+    }
+    await Booking_model.updateOne({_id:id_Booking},{$set:{...req.body}})
+    res.json({status:httpstatus.SUCCESS,data:'update done'})  
+})  
 const delete_Booking=asyncWrapper(async(req,res,next)=>{
     const id_Booking=req.params.id_Booking
     const Booking=await Booking_model.findOne({_id:id_Booking})
@@ -52,5 +61,6 @@ module.exports={
     get_all_Booking,
     get_Booking,
     add_Booking,
+    update_Booking,
     delete_Booking
 }  

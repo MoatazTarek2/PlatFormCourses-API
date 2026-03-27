@@ -23,10 +23,28 @@ const delete_lesson=asyncWrapper(async(req,res,next)=>{
     if(!lesson){
         return next(appError.create('NOT FOUND',404,httpstatus.FAIL))
     }
+    const course=await course_model.findOne({_id:lesson.course_id})
+    if(course.instructor.toString()!==req.paylod.id && req.paylod.role!=='admin'){
+        return next(appError.create('you are not allowed to delete this lesson',403,httpstatus.FAIL))
+    }
     await lessons_model.deleteOne({_id:id_lesson})
     res.json({status:httpstatus.SUCCESS,data:'deleted'})
 })
+const update_lesson=asyncWrapper(async(req,res,next)=>{
+    const id_lesson=req.params.id_lesson
+    const lesson=await lessons_model.findOne({_id:id_lesson})
+    if(!lesson){
+        return next(appError.create('NOT FOUND',404,httpstatus.FAIL))
+    }
+    const course=await course_model.findOne({_id:lesson.course_id})
+    if(course.instructor.toString()!==req.paylod.id && req.paylod.role!=='admin'){
+        return next(appError.create('you are not allowed to update this lesson',403,httpstatus.FAIL))
+    }
+    await lessons_model.updateOne({_id:id_lesson},{$set:req.body})
+    res.json({status:httpstatus.SUCCESS,data:'updated'})
+})
 module.exports={
     add_lesson,
-    delete_lesson
+    delete_lesson,
+    update_lesson
 }

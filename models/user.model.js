@@ -16,6 +16,13 @@ const UserSchema=mongoose.Schema({
         type:String,
         required:true
     },
+    emailresetcode:String,
+    emailresetexpire:Date,
+    emailresetverify:Boolean,
+    passwordchangeAt:Date,
+    passwordresetcode:String,
+    passwordresetexpire:Date,
+    passwordresetverify:Boolean,
     role:{
         type:String, 
         enum:['student','instructor','admin'],

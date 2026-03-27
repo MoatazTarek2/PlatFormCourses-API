@@ -1,5 +1,6 @@
 const asyncWrapper = require('../middleware/asyncWrapper')
 const appError=require('../utils/appError')
+const user_model=require('../models/user.model')
 const course_model=require('../models/courses.model')
 const lessons_model=require('../models/lessons.model')
 const Booking_model=require('../models/Booking.model')
@@ -39,11 +40,25 @@ const get_course=asyncWrapper(async(req,res,next)=>{
     }
     res.json({status:httpstatus.SUCCESS,data:{course}})
 })
+const courses_user=asyncWrapper(async(req,res,next)=>{
+    const user=await user_model.findOne({_id:req.paylod.id})
+    if(!user){
+        return next(appError.create('NOT FOUND User',404,httpstatus.FAIL))
+    }
+    const courses=await course_model.find({user_id:req.paylod.id})
+    if(!courses){
+        return next(appError.create('NOT FOUND Courses',404,httpstatus.FAIL))
+    }
+    res.json({status:httpstatus.SUCCESS,data:{courses}})
+})
 const delete_course=asyncWrapper(async(req,res,next)=>{
     const id_course=req.params.id_course
     const course=await course_model.findOne({_id:id_course})
     if(!course){
         return next(appError.create('NOT FOUND',404,httpstatus.FAIL))
+    }
+    if(course.instructor.toString()!==req.paylod.id && req.paylod.role!=='admin'){
+        return next(appError.create('you are not allowed to delete this course',403,httpstatus.FAIL))
     }
     await course_model.deleteOne({_id:id_course})
     res.json({status:httpstatus.SUCCESS,data:"delete done"})
@@ -53,6 +68,9 @@ const update_course=asyncWrapper(async(req,res,next)=>{
     const course=await course_model.findOne({_id:id_course})
     if(!course){
         return next(appError.create('NOT FOUND',404,httpstatus.FAIL))
+    }
+    if(course.instructor.toString()!==req.paylod.id && req.paylod.role!=='admin'){
+        return next(appError.create('you are not allowed to update this course',403,httpstatus.FAIL))
     }
     await course_model.updateOne({_id:id_course},{$set:{...req.body}})
     res.json({status:httpstatus.SUCCESS,data:'update done'})
@@ -93,6 +111,7 @@ module.exports={
     get_all_courses,
     add_course,
     get_course,
+    courses_user,
     delete_course,
     update_course,
     lesson_course,
